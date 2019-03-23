@@ -109,11 +109,7 @@ class CateTree:
             
             if found:
                 sum_similarity += similarity
-        
-        if sum_similarity != 0.0:
-            with open("/home/yinjia/similarity", "a") as out:
-                out.write(str(sum_similarity))
-                out.write("\n")
+      
         return sum_similarity
 
 
@@ -155,22 +151,16 @@ def vectorized_convertor(uid, bus_cate_dict, kwargs):
         if t.__class__ != CateTree:
             raise Exception('the %d-th pivot not a CateTree' % d)
         feature_arr[d] = t.similarity(path_sets)
-        #print "Notice: No Gaussien"
         if sigma != 0.:
             if type(sigma) == list:
                 s = sigma[d]
             else:
                 s = sigma
             u = t.similarity(path_sets)
-            # u= -u if u<0. else u
-            # print u
-            # print (2.0*np.power(s, 2))
-            # feature_arr[d] = np.exp(-np.power(u, 2)/(2.0*np.power(s, 2))) \
-            # if mean[d]!=0. else 1.
-            feature_arr[d] = u
+            feature_arr[d] = np.exp(-np.power(u, 2)/(2.0*np.power(s, 2)))
 
     feature_arr = np.array(feature_arr)
-    return ((feature_arr - feature_arr.min())/(feature_arr.max() - feature_arr.min())).tolist()
+    return feature_arr
 
 def vectorized_dist_calculator(v_1, v_2):
     '''
